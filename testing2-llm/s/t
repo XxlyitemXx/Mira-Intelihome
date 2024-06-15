@@ -1,0 +1,20 @@
+# Fix for potential SSL/TLS issues
+[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
+
+# Specify the desired installation directory (optional)
+$installDir = "C:\Users\Administrator\AppData\Roaming"  # Replace or remove if not needed
+
+# Download the Python installer
+$installerFileName = "python-3.11.4-amd64.exe" # Update if filename has changed
+$installerPath = Join-Path $PSScriptRoot $installerFileName
+Invoke-WebRequest -Uri "https://www.python.org/ftp/python/3.11.4/$installerFileName" -OutFile $installerPath
+
+# Build the installation command with optional installation directory
+$installCommand = "$installerPath /quiet InstallAllUsers=1 PrependPath=1"
+if ($installDir) {
+    $installCommand += " /InstallDir=$installDir"
+}
+
+# Install Python
+Start-Process $installerPath -ArgumentList $installCommand -Wait
+
